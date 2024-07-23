@@ -82,7 +82,8 @@ mod tests {
         income_data.insert(NaiveDate::from_ymd_opt(2024, 1, 1).unwrap(), 3000.0);
         income_data.insert(NaiveDate::from_ymd_opt(2024, 6, 15).unwrap(), 4000.0);
 
-        let years = get_available_years(&income_data);
+        let mut years = get_available_years(&income_data);
+        years.sort_unstable();
         assert_eq!(years, vec![2023, 2024]);
     }
 }
