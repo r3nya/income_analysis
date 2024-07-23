@@ -1,4 +1,4 @@
-use crate::analyzers::{OverallAnalysis, YearAnalysis};
+use crate::analyzers::YearAnalysis;
 
 pub fn print_year_analysis(analysis: &YearAnalysis) {
     println!("\nIncome Data for {}:", analysis.year);
@@ -25,7 +25,7 @@ pub fn print_year_analysis(analysis: &YearAnalysis) {
     );
 }
 
-pub fn print_overall_analysis(analysis: &OverallAnalysis) {
+pub fn print_overall_analysis(analysis: &YearAnalysis) {
     println!("\nOverall Income Data:");
     println!("{}", analysis.data_frame);
     println!("Total Income (Overall): ${:.2}", analysis.total_income);

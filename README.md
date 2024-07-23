@@ -2,11 +2,11 @@
 
 ## Overview
 
-This Income Analysis Tool is a Rust-based command-line application designed to analyze income data from a CSV file. It provides various statistics including total income, average income, highest and lowest income, and a calculation of 24% of the total income. The tool can analyze data for specific years (2023 and 2024) or provide an overall analysis.
+This Income Analysis Tool is a Rust-based command-line application designed to analyze income data from a CSV file. It provides various statistics including total income, average income, highest and lowest income, and a calculation of 24% of the total income. The tool can analyze data for specific years or provide an overall analysis.
 
 ## Features
 
-- Analyze income data for 2023 and 2024
+- Analyze income data for specific years
 - Calculate overall income statistics
 - Display total income, average income, highest income, and lowest income
 - Calculate and display 24% of the total income
@@ -22,20 +22,18 @@ cargo run -- [OPTION]
 
 ### Options:
 
-- (no option): Show data for all years and overall analysis
-- `all`: Same as no option, show all data
-- `2023`: Show data for 2023
-- `2024`: Show data for 2024
-- `help`: Show the help message
+  Options:
+    -y, --year <YEAR>  Specify the year for analysis
+    -h, --help         Print help
+    -V, --version      Print version
 
 ### Examples:
 
 ```bash
 cargo run
-cargo run -- all
-cargo run -- 2023
-cargo run -- 2024
-cargo run -- help
+cargo run -- -y 2023
+cargo run -- --year 2024
+cargo run -- -h
 ```
 
 ## Input Data

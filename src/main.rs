@@ -1,53 +1,47 @@
-use polars::prelude::*;
-use std::env;
-use std::process;
+use clap::Parser;
 
 mod analyzers;
-mod cli;
 mod data_loader;
 mod output;
 
 use analyzers::{analyze_overall_data, analyze_year_data};
-use data_loader::load_data_from_csv;
+use data_loader::{df_to_hashmap, get_available_years, load_data_from_csv};
 use output::{print_overall_analysis, print_year_analysis};
 
-fn main() -> Result<(), PolarsError> {
-    let args: Vec<String> = env::args().collect();
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    year: Option<i32>,
+}
 
-    if args.get(1).map(String::as_str) == Some("help") {
-        cli::print_usage();
-        process::exit(0);
-    }
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args = Args::parse();
 
     let df = load_data_from_csv("income_data.csv")?;
+    let income_data = df_to_hashmap(&df)?;
+    let available_years = get_available_years(&income_data);
 
-    // Convert DataFrame to HashMaps
-    let (income_2023, income_2024) = data_loader::df_to_hashmaps(&df)?;
+    match args.year {
+        Some(year) => {
+            if available_years.contains(&year) {
+                let analysis = analyze_year_data(year, &income_data)?;
+                print_year_analysis(&analysis);
+            } else {
+                println!("No data available for the year {}", year);
+                println!("Available years: {:?}", available_years);
+            }
+        }
+        None => {
+            // Analyze and print data for each available year
+            for &year in &available_years {
+                let analysis = analyze_year_data(year, &income_data)?;
+                print_year_analysis(&analysis);
+            }
 
-    match args.get(1).map(String::as_str) {
-        None | Some("all") => {
-            // Default behavior: show all data
-            let analysis_2023 = analyze_year_data(2023, &income_2023)?;
-            print_year_analysis(&analysis_2023);
-
-            let analysis_2024 = analyze_year_data(2024, &income_2024)?;
-            print_year_analysis(&analysis_2024);
-
-            let overall_analysis = analyze_overall_data(&income_2023, &income_2024)?;
+            // Analyze and print overall data
+            let overall_analysis = analyze_overall_data(&income_data)?;
             print_overall_analysis(&overall_analysis);
-        }
-        Some("2023") => {
-            let analysis_2023 = analyze_year_data(2023, &income_2023)?;
-            print_year_analysis(&analysis_2023);
-        }
-        Some("2024") => {
-            let analysis_2024 = analyze_year_data(2024, &income_2024)?;
-            print_year_analysis(&analysis_2024);
-        }
-        Some(_) => {
-            println!("Invalid argument. Use 'help' to see available options.");
-            cli::print_usage();
-            process::exit(1);
         }
     }
 
