@@ -21,11 +21,11 @@ cargo run -- [OPTION]
 ```
 
 ### Options:
-
-  Options:
-    -y, --year <YEAR>  Specify the year for analysis
-    -h, --help         Print help
-    -V, --version      Print version
+```
+-y, --year <YEAR>  Specify the year for analysis
+-h, --help         Print help
+-V, --version      Print version
+```
 
 ### Examples:
 
